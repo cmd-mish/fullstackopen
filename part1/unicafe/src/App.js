@@ -8,19 +8,26 @@ const Button = (props) => (
   </button>
 )
 
-const StatisticLine = ({ title, value, unit }) => <div>{title} {value} {unit}</div>
+const StatisticLine = ({ title, value, unit }) => (
+<tr>
+  <td>{title}</td>
+  <td>{value} {unit}</td>
+</tr>
+)
 
 const Statistics = ({ good, neutral, bad }) => {
   if ((good + neutral + bad) !== 0) {
     return (
-      <div>
-        <StatisticLine title="good" value={good} />
-        <StatisticLine title="neutral" value={neutral} />
-        <StatisticLine title="bad" value={bad} />
-        <StatisticLine title="all" value={good + neutral + bad} />
-        <StatisticLine title="average" value={(good + -1 * bad) / (good + neutral + bad)} />
-        <StatisticLine title="positive" value={good / (good + neutral + bad) * 100} unit="%" />
-      </div>
+      <table>
+        <tbody>
+          <StatisticLine title="good" value={good} />
+          <StatisticLine title="neutral" value={neutral} />
+          <StatisticLine title="bad" value={bad} />
+          <StatisticLine title="all" value={good + neutral + bad} />
+          <StatisticLine title="average" value={(good + -1 * bad) / (good + neutral + bad)} />
+          <StatisticLine title="positive" value={good / (good + neutral + bad) * 100} unit="%" />
+        </tbody>
+      </table>
     )
   }
   return (
