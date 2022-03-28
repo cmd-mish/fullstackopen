@@ -1,4 +1,5 @@
 import React from 'react'
+import Weather from './Weather'
 
 const OneCountry = ({ title, capital, area, languages, flag }) => {
   const langArray = Object.values(languages)
@@ -16,6 +17,8 @@ const OneCountry = ({ title, capital, area, languages, flag }) => {
         )}
       </ul>
       <img src={flag.png} />
+      <h2>Weather in {capital[0]}</h2>
+      <Weather city={capital[0]} /><br />
     </div>
   )
 }

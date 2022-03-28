@@ -10,8 +10,8 @@ const Countries = ({ countries, filter }) => {
   if (search.length < 11 && search.length > 1) {
     return(
     <div>
-      {search.map(country =>
-        <Country key={country.name.common} name={country.name.common} />
+      {search.map((country, index) =>
+        <Country key={index} info={country} />
       )}
     </div>
     )
