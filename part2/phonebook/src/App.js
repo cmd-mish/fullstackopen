@@ -35,7 +35,21 @@ const App = () => {
     event.preventDefault()
 
     if (persons.map(person => person.name).includes(newName)) {
-      window.alert(`${newName} is already added to phonebook`)
+
+      if (window.confirm(`${newName} is already added to phonebook. Do you want to replace the old number with a new one?`)) {
+        const id = persons.find(n => n.name === newName).id
+        const person = persons.find(n => n.id === id)
+        const changedPerson = {...person, number: newNumber}
+
+        numberService
+          .update(id, changedPerson)
+          .then(returnedNumber => {
+            setPersons(persons.map(person => person.id !== id ? person : returnedNumber))
+          })
+          .catch(error => {
+            alert(error)
+          })
+      }
     } else {
       const nameObject = {
         name: newName,
@@ -50,6 +64,9 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
+        .catch(error => {
+          alert(error)
+        })
       }
     }
 
@@ -59,6 +76,9 @@ const App = () => {
         .remove(id)
         .then(returnedNumber => {
           setPersons(persons.filter(person => person.id !== id))
+        })
+        .catch(error => {
+          alert(error)
         })
       }
     }
