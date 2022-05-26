@@ -12,6 +12,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setFilter] = useState('')
   const [notification, setNotification] = useState(null)
+  const [notificationStatus, setNotificationStatus] = useState(null)
 
   useEffect(() => {
     numberService
@@ -47,12 +48,13 @@ const App = () => {
           .update(id, changedPerson)
           .then(returnedNumber => {
             setPersons(persons.map(person => person.id !== id ? person : returnedNumber))
-            displayNotification(`Updated ${newName}!`)
+            displayNotification(`Updated ${newName}!`, "success")
             setNewName('')
             setNewNumber('')
           })
           .catch(error => {
-            alert(error)
+            displayNotification(`Information of ${newName} has already been removed from the server!`, "error")
+            setPersons(persons.filter(n => n.id !== id))
           })
       }
     } else {
@@ -66,12 +68,13 @@ const App = () => {
         .create(nameObject)
         .then(returnedNumber => {
           setPersons(persons.concat(returnedNumber))
-          displayNotification(`Added ${newName}!`)
+          displayNotification(`Added ${newName}!`, "success")
           setNewName('')
           setNewNumber('')
         })
         .catch(error => {
-          alert(error)
+          console.log(`id: ${nameObject.id}`, error)
+          displayNotification(`Couldn't add ${newName} to the phonebook!`, "error")
         })
       }
     }
@@ -82,16 +85,18 @@ const App = () => {
         .remove(id)
         .then(returnedNumber => {
           setPersons(persons.filter(person => person.id !== id))
-          displayNotification(`Removed ${name}!`)
+          displayNotification(`Removed ${name}!`, "success")
         })
         .catch(error => {
-          alert(error)
+          displayNotification(`Couldn't remove ${name} from the phonebook!`, "error")
+          setPersons(persons.filter(n => n.id !== id))
         })
       }
     }
 
-    const displayNotification = (message) => {
+    const displayNotification = (message, status) => {
       setNotification(message)
+      setNotificationStatus(status)
       setTimeout(() => {
         setNotification(null)
       }, 5000)
@@ -100,7 +105,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notification} />
+      <Notification message={notification} status={notificationStatus} />
       <Filter value={newFilter} change={handleFilter} />
 
       <h3>Add a new</h3>
