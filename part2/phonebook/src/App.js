@@ -45,6 +45,8 @@ const App = () => {
           .update(id, changedPerson)
           .then(returnedNumber => {
             setPersons(persons.map(person => person.id !== id ? person : returnedNumber))
+            setNewName('')
+            setNewNumber('')
           })
           .catch(error => {
             alert(error)
