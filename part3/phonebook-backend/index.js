@@ -2,7 +2,7 @@ const { response } = require('express')
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 
 app.use(express.json())
 morgan.token('post-data', function (req) { return JSON.stringify(req.body) })
