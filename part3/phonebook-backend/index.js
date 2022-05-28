@@ -1,9 +1,12 @@
 const { response } = require('express')
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 const PORT = 3001
 
 app.use(express.json())
+morgan.token('post-data', function (req) { return JSON.stringify(req.body) })
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-data'))
 
 let persons = [
   { 
@@ -53,10 +56,9 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
-  persons = persons.filter(person => person.id !== id)
   
+  persons = persons.filter(person => person.id !== id)
   response.status(204).end()
-  console.log(`Request to remove person with id ${id}`)
 })
 
 app.post('/api/persons', (request, response) =>{
@@ -82,7 +84,6 @@ app.post('/api/persons', (request, response) =>{
 
   persons = persons.concat(person)
   response.json(person)
-  console.log("Added entry: ", person)
 })
 
 app.listen(PORT, () => {
