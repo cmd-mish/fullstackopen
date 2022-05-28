@@ -4,6 +4,8 @@ const morgan = require('morgan')
 const app = express()
 const PORT = process.env.PORT || 3001
 
+app.use(express.static('build'))
+
 app.use(express.json())
 morgan.token('post-data', function (req) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-data'))
