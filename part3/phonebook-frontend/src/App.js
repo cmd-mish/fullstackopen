@@ -36,47 +36,23 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
+    const nameObject = {
+      name: newName,
+      number: newNumber
+    }
 
-    if (persons.map(person => person.name).includes(newName)) {
-
-      if (window.confirm(`${newName} is already added to phonebook. Do you want to replace the old number with a new one?`)) {
-        const id = persons.find(n => n.name === newName).id
-        const person = persons.find(n => n.id === id)
-        const changedPerson = {...person, number: newNumber}
-
-        numberService
-          .update(id, changedPerson)
-          .then(returnedNumber => {
-            setPersons(persons.map(person => person.id !== id ? person : returnedNumber))
-            displayNotification(`Updated ${newName}!`, "success")
-            setNewName('')
-            setNewNumber('')
-          })
-          .catch(error => {
-            displayNotification(`Information of ${newName} has already been removed from the server!`, "error")
-            setPersons(persons.filter(n => n.id !== id))
-          })
-      }
-    } else {
-      const nameObject = {
-        name: newName,
-        number: newNumber,
-        id: persons.length + 1
-      }
-
-      numberService
-        .create(nameObject)
-        .then(returnedNumber => {
-          setPersons(persons.concat(returnedNumber))
-          displayNotification(`Added ${newName}!`, "success")
-          setNewName('')
-          setNewNumber('')
-        })
-        .catch(error => {
-          console.log(`id: ${nameObject.id}`, error)
-          displayNotification(`Couldn't add ${newName} to the phonebook!`, "error")
-        })
-      }
+    numberService
+      .create(nameObject)
+      .then(returnedNumber => {
+        setPersons(persons.concat(returnedNumber))
+        displayNotification(`Added ${newName}!`, "success")
+        setNewName('')
+        setNewNumber('')
+      })
+      .catch(error => {
+        console.log(`id: ${nameObject.id}`, error)
+        displayNotification(`Couldn't add ${newName} to the phonebook!`, "error")
+      })
     }
 
     const removePerson = (id, name) => {
