@@ -2,11 +2,11 @@ GET http://localhost:3001/api/persons
 ###
 GET http://localhost:3001/api/persons/1
 ###
-GET http://localhost:3001/api/persons/629384fb0409bcbb534d25c7
+GET http://localhost:3001/api/persons/6293861dbd991464b3f9707f
 ###
 GET http://localhost:3001/info
 ###
-DELETE http://localhost:3001/api/persons/1
+DELETE http://localhost:3001/api/persons/629384e64d3808be87b3bb
 ###
 POST http://localhost:3001/api/persons
 content-type: application/json
@@ -14,4 +14,11 @@ content-type: application/json
 {
     "name": "Arto2 Hellas",
     "number": "1234567"
+}
+###
+PUT http://localhost:3001/api/persons/6293861dbd991464b3f9707f
+Content-Type: application/json
+
+{
+    "number": "2356776"
 }
