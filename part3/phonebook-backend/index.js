@@ -1,5 +1,4 @@
 require('dotenv').config()
-const e = require('express')
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
@@ -69,8 +68,8 @@ app.put('/api/persons/:id', (request, response, next) => {
   const { name, number } = request.body
 
   Person.findByIdAndUpdate(
-    request.params.id, 
-    { name, number }, 
+    request.params.id,
+    { name, number },
     { new: true, runValidators: true, context: 'query' }
   )
     .then(updatedPerson => {
@@ -102,6 +101,7 @@ const errorHandler = (error, request, response, next) => {
 
 app.use(errorHandler)
 
+/*global process */
 const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)
