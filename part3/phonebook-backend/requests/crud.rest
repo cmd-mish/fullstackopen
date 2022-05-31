@@ -12,13 +12,14 @@ POST http://localhost:3001/api/persons
 content-type: application/json
 
 {
-    "name": "Arto2 Hellas",
-    "number": "1234567"
+    "name": "Ada Lovelace6",
+    "number": "090-1234556"
 }
 ###
 PUT http://localhost:3001/api/persons/6293861dbd991464b3f9707f
 Content-Type: application/json
 
 {
+    "name": "Ada Lovelace",
     "number": "2356776"
 }

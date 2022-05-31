@@ -53,8 +53,8 @@ const App = () => {
             setNewNumber('')
           })
           .catch(error => {
-            displayNotification(`Information of ${newName} has already been removed from the server!`, "error")
-            setPersons(persons.filter(n => n.id !== id))
+            console.log(error.response.data.error)
+            displayNotification(error.response.data.error, "error")
           })
       }
     } else {
@@ -73,8 +73,8 @@ const App = () => {
           setNewNumber('')
         })
         .catch(error => {
-          console.log(`id: ${nameObject.id}`, error)
-          displayNotification(`Couldn't add ${newName} to the phonebook!`, "error")
+          console.log(error.response.data.error)
+          displayNotification(error.response.data.error, "error")
         })
     }
   }
@@ -88,7 +88,8 @@ const App = () => {
           displayNotification(`Removed ${name}!`, "success")
         })
         .catch(error => {
-          displayNotification(`Couldn't remove ${name} from the phonebook!`, "error")
+          console.log(error.response.data.error)
+          displayNotification(error.response.data.error, "error")
           setPersons(persons.filter(n => n.id !== id))
         })
     }
