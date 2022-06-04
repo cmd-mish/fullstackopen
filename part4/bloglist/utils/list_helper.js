@@ -1,3 +1,4 @@
+const { constant, property } = require('lodash')
 const _ = require('lodash')
 
 const dummy = (blogs) => {
@@ -31,7 +32,7 @@ const mostBlogs = (blogs) => {
     const authorsAndNumberArticles = _.countBy(blogs, 'author')
     const numbersOfBlogs = _.values(authorsAndNumberArticles)
     const maxAnount = _.max(numbersOfBlogs)
-    const mostBlogsAuthor = _.findKey(authorsAndNumberArticles, (o) => { return o === maxAnount })
+    const mostBlogsAuthor = _.findKey(authorsAndNumberArticles, (blogs) => { return blogs === maxAnount })
     const authorObject = {
       author: mostBlogsAuthor,
       blogs: maxAnount
@@ -43,9 +44,45 @@ const mostBlogs = (blogs) => {
   }
 }
 
+const mostLikes = (blogs) => {
+  if (blogs.length > 0) {
+    const grouppedAuthors = _.groupBy(blogs, 'author')
+
+    const authorsAndProperties = {}
+    _.forEach(grouppedAuthors, (value, key) => { 
+      authorsAndProperties[key] = value
+    })
+
+    const authorsAndLikes = {}
+    _.forEach(authorsAndProperties, (properties, authorName) => { 
+      let likes = 0
+      _.forEach(properties, (value, key) => {
+        _.forEach(value, (value, key) => {
+          if (key === 'likes')
+            likes += value
+            authorsAndLikes[authorName] = likes
+        })
+      }) 
+    })
+
+    const numbersOfLikes = _.values(authorsAndLikes)
+    const maxAnount = _.max(numbersOfLikes)
+    const mostLikesAuthor = _.findKey(authorsAndLikes, (likes) => { return likes === maxAnount })
+    const authorObject = {
+      author: mostLikesAuthor,
+      likes: maxAnount
+    }
+
+    return authorObject
+  } else {
+    return 0
+  }
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
