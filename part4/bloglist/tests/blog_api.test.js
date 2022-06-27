@@ -30,6 +30,27 @@ test('unique identifier is named "id"', async () => {
   })
 })
 
+test('blogs can be created with POST request', async () => {
+  const newPost = {
+    title: "blog added from the test",
+    author: "default author",
+    url: "https://example.com/",
+    likes: 2
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newPost)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+
+  const titles = blogsAtEnd.map(blog => blog.title)
+  expect(titles).toContain('blog added from the test')
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
