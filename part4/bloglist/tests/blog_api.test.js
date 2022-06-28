@@ -69,6 +69,37 @@ test('missing likes results in 0', async () => {
   expect(blogsAtEnd[indexOfTest].likes).toEqual(0)
 })
 
+test('400 Bad Request response to missing title and/or url', async () => {
+  let newBlog = {
+    author: "default author"
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  newBlog = {
+    author: "default author",
+    url: "https://example.com/"
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  newBlog = {
+    title: "blog with no url",
+    author: "default author"
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
