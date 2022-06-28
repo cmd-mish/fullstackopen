@@ -14,6 +14,7 @@ beforeEach(async () => {
     await blogObject.save()
   }
 })
+
 describe('getting existing blogs', () => {
   test('blogs are returned in the JSON format', async () => {
     await api
@@ -30,6 +31,7 @@ describe('getting existing blogs', () => {
     })
   })
 })
+
 describe('creating a new blog', () => {
   test('blogs can be created with POST request', async () => {
     const newBlog = {
@@ -127,6 +129,40 @@ describe('deleting blogs', () => {
     await api
       .delete('/api/blogs/123')
       .expect(500)
+  })
+})
+
+describe('updating a blog', () => {
+  test('set a new amount of likes', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const indexOfBlog = blogsAtStart.findIndex(blog => blog.title === 'First class tests')
+    const blogToEdit = blogsAtStart[indexOfBlog]
+
+    const updatedBlog = {
+      likes: 10
+    }
+
+    const result = await api
+      .put(`/api/blogs/${blogToEdit.id}`)
+      .send(updatedBlog)
+    expect(result.body.likes).toEqual(10)
+  })
+
+  test('changing url and likes', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const indexOfBlog = blogsAtStart.findIndex(blog => blog.title === 'First class tests')
+    const blogToEdit = blogsAtStart[indexOfBlog]
+
+    const updatedBlog = {
+      url: "https://example.com/",
+      likes: 50
+    }
+
+    const result = await api
+      .put(`/api/blogs/${blogToEdit.id}`)
+      .send(updatedBlog)
+    expect(result.body.likes).toEqual(50)
+    expect(result.body.url).toBe('https://example.com/')
   })
 })
 
