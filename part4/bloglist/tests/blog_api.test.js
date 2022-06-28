@@ -24,14 +24,14 @@ test('blog posts are returned in the JSON format', async () => {
 
 test('unique identifier is named "id"', async () => {
   const response = await api.get('/api/blogs')
-  
+
   response.body.forEach(blog => {
     expect(blog.id).toBeDefined()
   })
 })
 
 test('blogs can be created with POST request', async () => {
-  const newPost = {
+  const newBlog = {
     title: "blog added from the test",
     author: "default author",
     url: "https://example.com/",
@@ -40,7 +40,7 @@ test('blogs can be created with POST request', async () => {
 
   await api
     .post('/api/blogs')
-    .send(newPost)
+    .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
@@ -49,6 +49,24 @@ test('blogs can be created with POST request', async () => {
 
   const titles = blogsAtEnd.map(blog => blog.title)
   expect(titles).toContain('blog added from the test')
+})
+
+test('missing likes results in 0', async () => {
+  const newBlog = {
+    title: "blog with missing likes",
+    author: "default author",
+    url: "https://example.com/"
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+
+  const indexOfTest = blogsAtEnd.findIndex(blog => blog.title === 'blog with missing likes')
+  expect(blogsAtEnd[indexOfTest].likes).toEqual(0)
 })
 
 afterAll(() => {
