@@ -1,16 +1,35 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const jwt = require('jsonwebtoken')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
 
+let token, user
+
+beforeAll(async () => {
+  const loginDetails = {
+    username: 'testuser',
+    password: 'hash'
+  }
+
+  const login = await api
+    .post('/api/login')
+    .set('Content-Type', 'application/json')
+    .send(loginDetails)
+
+  token = login.body.token
+  user = jwt.verify(token, process.env.SECRET)
+})
+
 beforeEach(async () => {
   await Blog.deleteMany({})
 
   for (let blog of helper.initialBlogs) {
     let blogObject = new Blog(blog)
+    blogObject.user = user.id
     await blogObject.save()
   }
 })
@@ -32,8 +51,8 @@ describe('getting existing blogs', () => {
   })
 })
 
-describe('creating a new blog', () => {
-  test('blogs can be created with POST request', async () => {
+describe('creating new blogs', () => {
+  test('a new blog can be created with POST request', async () => {
     const newBlog = {
       title: "blog added from the test",
       author: "default author",
@@ -43,6 +62,7 @@ describe('creating a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', 'bearer '.concat(token))
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -54,7 +74,21 @@ describe('creating a new blog', () => {
     expect(titles).toContain('blog added from the test')
   })
 
-  test('missing likes results in 0', async () => {
+  test('unable to add a blog without a token', async () => {
+    const newBlog = {
+      title: "blog without a token",
+      author: "default author",
+      url: "https://example.com/",
+      likes: 2
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+  })
+
+  test('missing likes result in 0', async () => {
     const newBlog = {
       title: "blog with missing likes",
       author: "default author",
@@ -63,6 +97,7 @@ describe('creating a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', 'bearer '.concat(token))
       .send(newBlog)
 
     const blogsAtEnd = await helper.blogsInDb()
@@ -79,6 +114,7 @@ describe('creating a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', 'bearer '.concat(token))
       .send(newBlog)
       .expect(400)
 
@@ -89,6 +125,7 @@ describe('creating a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', 'bearer '.concat(token))
       .send(newBlog)
       .expect(400)
 
@@ -99,6 +136,7 @@ describe('creating a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', 'bearer '.concat(token))
       .send(newBlog)
       .expect(400)
   })
@@ -111,6 +149,7 @@ describe('deleting blogs', () => {
 
     await api
       .delete(`/api/blogs/${blogToBeDeleted.id}`)
+      .set('Authorization', 'bearer '.concat(token))
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
@@ -120,14 +159,18 @@ describe('deleting blogs', () => {
     const contents = blogsAtEnd.map(blog => blog.title)
     expect(contents).not.toContain(blogToBeDeleted.title)
   })
-  test('deleting a blog with non-existing id', async () => {
+
+  test('deleting a blog with non-existing id results in 404', async () => {
     await api
       .delete('/api/blogs/5a422aa71b54a676234d17f3')
+      .set('Authorization', 'bearer '.concat(token))
       .expect(404)
   })
-  test('deleting a blog with id in a wrong format', async () => {
+
+  test('deleting a blog with id in a wrong format results in 500', async () => {
     await api
       .delete('/api/blogs/123')
+      .set('Authorization', 'bearer '.concat(token))
       .expect(500)
   })
 })
