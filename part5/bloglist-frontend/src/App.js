@@ -9,13 +9,8 @@ import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
 
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const [user, setUser] = useState(null)
 
   const [notification, setNotification] = useState(null)
   const [notificationStatus, setNotificationStatus] = useState(null)
@@ -35,37 +30,23 @@ const App = () => {
     }
   }, [])
 
-  const addBlog = (event) => {
-    event.preventDefault()
+  const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
-
-    const blogObject = {
-      title: title,
-      author: author,
-      url: url
-    }
 
     blogService
       .create(blogObject)
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
         displayNotification(`a new blog "${blogObject.title}" added`, 'success')
-        setTitle('')
-        setAuthor('')
-        setUrl('')
       })
       .catch(error => {
         displayNotification(error.response.statusText, "error")
       })
   }
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    
+  const handleLogin = async (userObject) => {
     try {
-      const user = await loginService.login({
-        username, password
-      })
+      const user = await loginService.login(userObject)
       
       window.localStorage.setItem(
         'loggedInUser', JSON.stringify(user)
@@ -74,8 +55,6 @@ const App = () => {
       blogService.setToken(user.token)
       setUser(user)
       displayNotification(`welcome, ${user.name}!`, 'success')
-      setUsername('')
-      setPassword('')
     } catch (exception) {
       displayNotification(exception.response.data.error, 'error')
     }
@@ -104,11 +83,7 @@ const App = () => {
        <div>
         <h2>log in to application</h2>
         <LoginForm 
-          handleLogin={handleLogin}
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
+          loginFunction={handleLogin}
         />
       </div> :
       <div>
@@ -121,13 +96,7 @@ const App = () => {
           <h2>create a new blog</h2>
           <Togglable buttonLabel='new note' ref={blogFormRef}>
             <BlogForm
-              addBlog={addBlog}
-              title={title}
-              setTitle={setTitle}
-              author={author}
-              setAuthor={setAuthor}
-              url={url}
-              setUrl={setUrl}
+              createBlog={addBlog}
             />
           </Togglable>
         </div>
