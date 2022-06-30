@@ -4,6 +4,7 @@ import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import loginService from './services/login'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -14,6 +15,9 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+
+  const [notification, setNotification] = useState(null)
+  const [notificationStatus, setNotificationStatus] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -42,9 +46,13 @@ const App = () => {
       .create(blogObject)
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
+        displayNotification(`a new blog "${blogObject.title}" added`, 'success')
         setTitle('')
         setAuthor('')
         setUrl('')
+      })
+      .catch(error => {
+        displayNotification(error.response.statusText, "error")
       })
   }
 
@@ -62,20 +70,31 @@ const App = () => {
 
       blogService.setToken(user.token)
       setUser(user)
+      displayNotification(`welcome, ${user.name}!`, 'success')
       setUsername('')
       setPassword('')
     } catch (exception) {
-      console.log(exception)
+      displayNotification(exception.response.data.error, 'error')
     }
   }
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedInUser')
+    displayNotification(`see you, ${user.name}!`, 'success')
     setUser(null)
+  }
+
+  const displayNotification = (message, status) => {
+    setNotification(message)
+    setNotificationStatus(status)
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
   }
 
   return (
     <div>
+      <Notification message={notification} status={notificationStatus} />
       {user === null ?
        <div>
         <h2>log in to application</h2>
