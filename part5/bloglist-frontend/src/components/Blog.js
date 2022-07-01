@@ -1,12 +1,21 @@
 import { useState } from "react"
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, changeLikes }) => {
   const [expanded, setExpanded] = useState(false)
 
   const hideWhenExpanded = { display: expanded ? 'none' : '' }
   const showWhenExpanded = { display: expanded ? '' : 'none' }
 
   const toggleExpansion = () => setExpanded(!expanded)
+
+  const addLike = () => {
+    const updatedBlogObject = {
+      ...blog,
+      likes: blog.likes + 1
+    }
+
+    changeLikes(blog.id, updatedBlogObject)
+  }
 
   const blogStyle = {
     margin: 5,
@@ -27,7 +36,7 @@ const Blog = ({ blog }) => {
         {blog.title}&nbsp;
         <button onClick={toggleExpansion}>hide</button><br />
         <i>url:</i> <a href={blog.url}>{blog.url}</a><br />
-        <i>likes:</i> {blog.likes} <button>like</button><br />
+        <i>likes:</i> {blog.likes} <button onClick={addLike}>like</button><br />
         <i>author:</i> {blog.author}
       </div>
     </div>

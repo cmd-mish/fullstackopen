@@ -182,11 +182,13 @@ describe('updating a blog', () => {
     const blogToEdit = blogsAtStart[indexOfBlog]
 
     const updatedBlog = {
+      ...blogToEdit,
       likes: 10
     }
 
     const result = await api
       .put(`/api/blogs/${blogToEdit.id}`)
+      .set('Authorization', 'bearer '.concat(token))
       .send(updatedBlog)
     expect(result.body.likes).toEqual(10)
   })
@@ -197,12 +199,14 @@ describe('updating a blog', () => {
     const blogToEdit = blogsAtStart[indexOfBlog]
 
     const updatedBlog = {
+      ...blogToEdit,
       url: "https://example.com/",
       likes: 50
     }
 
     const result = await api
       .put(`/api/blogs/${blogToEdit.id}`)
+      .set('Authorization', 'bearer '.concat(token))
       .send(updatedBlog)
     expect(result.body.likes).toEqual(50)
     expect(result.body.url).toBe('https://example.com/')

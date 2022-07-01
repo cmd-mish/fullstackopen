@@ -49,18 +49,30 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   }
 })
 
-blogsRouter.put('/:id', async (request, response) => {
-  const { likes, author, url, title } = request.body
+blogsRouter.put('/:id', userExtractor, async (request, response) => {
+  const { likes, author, url, title, user } = request.body
+  const loggedInUser = request.user
 
-  const updatedBlogObject = {
-    title: title,
-    likes: likes,
-    author: author,
-    url: url
+  if (!loggedInUser) {
+    return response.status(401).json({
+      error: 'log in to like posts'
+    })
   }
 
-  const result = await Blog.findByIdAndUpdate(request.params.id, updatedBlogObject, { new: true })
-  response.json(result)
+  if (likes && author && url && title && user) {
+    const updatedBlogObject = {
+      title: title,
+      likes: likes,
+      author: author,
+      url: url, 
+      user: user.id
+    }
+
+    const result = await Blog.findByIdAndUpdate(request.params.id, updatedBlogObject, { new: true })
+    response.json(result)
+  } else {
+    response.status(400).end()
+  }
 })
 
 module.exports = blogsRouter

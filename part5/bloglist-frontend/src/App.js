@@ -44,6 +44,17 @@ const App = () => {
       })
   }
 
+  const changeLikes = (id, updatedBlogObject) => {
+    blogService
+      .update(id, updatedBlogObject)
+      .then(returnedBlog => {
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+      })
+      .catch(error => {
+        displayNotification(error.response.statusText, "error")
+      })
+  }
+
   const handleLogin = async (userObject) => {
     try {
       const user = await loginService.login(userObject)
@@ -101,7 +112,7 @@ const App = () => {
           </Togglable>
         </div>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} changeLikes={changeLikes} />
         )}
       </div>
       }
