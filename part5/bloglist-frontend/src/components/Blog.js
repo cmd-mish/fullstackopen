@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 import PropTypes from 'prop-types'
 
 const Blog = ({ blog, changeLikes, currentUserId, removeBlog }) => {
