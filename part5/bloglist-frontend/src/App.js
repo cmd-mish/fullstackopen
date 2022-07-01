@@ -55,6 +55,18 @@ const App = () => {
       })
   }
 
+  const removeBlog = (id) => {
+    blogService
+      .remove(id)
+      .then(() => {
+        setBlogs(blogs.filter(blog => blog.id !== id))
+        displayNotification(`blog remove successfully`, 'success')
+      })
+      .catch(error => {
+        displayNotification(error.response.data.error, "error")
+      })
+  }
+
   const handleLogin = async (userObject) => {
     try {
       const user = await loginService.login(userObject)
@@ -116,7 +128,12 @@ const App = () => {
             b.likes - a.likes
           )
           .map(blog =>
-            <Blog key={blog.id} blog={blog} changeLikes={changeLikes} />
+            <Blog 
+              key={blog.id} 
+              blog={blog} 
+              changeLikes={changeLikes} 
+              currentUserId={user.id}
+              removeBlog={removeBlog} />
           )
         }
       </div>
