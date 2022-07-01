@@ -9,16 +9,12 @@ const Blog = ({ blog, changeLikes, currentUserId, removeBlog }) => {
   const toggleExpansion = () => setExpanded(!expanded)
 
   const addLike = () => {
-    console.log('currentUserId Start', currentUserId)
-    console.log('blog', blog)
     const updatedBlogObject = {
       ...blog,
       likes: blog.likes + 1
     }
-    console.log('updatedBlogObject', updatedBlogObject)
 
     changeLikes(blog.id, updatedBlogObject)
-    console.log('currentUserId End', currentUserId)
   }
 
   const removeThisBlog = () => {
