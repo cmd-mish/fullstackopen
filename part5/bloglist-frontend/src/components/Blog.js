@@ -35,11 +35,11 @@ const Blog = ({ blog, changeLikes, currentUserId, removeBlog }) => {
 
   return (
     <div style={blogStyle}>
-      <div style={hideWhenExpanded}>
+      <div style={hideWhenExpanded} className='blog-default'>
         {blog.title}&nbsp;
         <button onClick={toggleExpansion}>view</button>
       </div>
-      <div style={showWhenExpanded}>
+      <div style={showWhenExpanded} className='blog-expanded'>
         {blog.title}&nbsp;
         <button onClick={toggleExpansion}>hide</button><br />
         <i>url:</i> <a href={blog.url}>{blog.url}</a><br />
