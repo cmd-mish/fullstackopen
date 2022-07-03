@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
 describe('Blog test', () => {
-  let container
+  let container, mockHandler
 
   beforeEach(() => {
     const blog = {
@@ -16,7 +16,8 @@ describe('Blog test', () => {
       user: '1234'
     }
 
-    container = render(<Blog blog={blog} />).container
+    mockHandler = jest.fn()
+    container = render(<Blog blog={blog} changeLikes={mockHandler} />).container
   })
 
   test('renders a default view of a blog', () => {
@@ -37,5 +38,14 @@ describe('Blog test', () => {
     expect(div).toHaveTextContent('http://testurl/')
     expect(div).toHaveTextContent('test blog')
     expect(div).toHaveTextContent('10')
+  })
+
+  test('when like button clicked twice the event is called twice', async () => {
+    const user = userEvent.setup()
+    const button = screen.getByText('like')
+    await user.click(button)
+    await user.click(button)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
   })
 })
