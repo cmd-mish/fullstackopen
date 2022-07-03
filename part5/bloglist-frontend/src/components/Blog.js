@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 
 const Blog = ({ blog, changeLikes, currentUserId, removeBlog }) => {
   const [expanded, setExpanded] = useState(false)
@@ -54,14 +54,14 @@ const Blog = ({ blog, changeLikes, currentUserId, removeBlog }) => {
   )
 }
 
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  changeLikes: PropTypes.func.isRequired,
-  currentUserId: PropTypes.oneOfType([
-    PropTypes.object.isRequired,
-    PropTypes.string.isRequired
-  ]),
-  removeBlog: PropTypes.func.isRequired
-}
+// Blog.propTypes = {
+//   blog: PropTypes.object.isRequired,
+//   changeLikes: PropTypes.func.isRequired,
+//   currentUserId: PropTypes.oneOfType([
+//     PropTypes.object.isRequired,
+//     PropTypes.string.isRequired
+//   ]),
+//   removeBlog: PropTypes.func.isRequired
+// }
 
 export default Blog
