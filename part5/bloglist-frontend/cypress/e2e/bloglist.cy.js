@@ -76,7 +76,7 @@ describe('Bloglist app', function() {
           .and('contain', 'likes: 1')
       })
 
-      it.only('user can delete a blog', function() {
+      it('user can delete a blog', function() {
         cy.contains('existing blog with a title').find('button').contains('view').click()
         cy.get('.blog-expanded')
           .should('contain', 'existing blog with a title')
@@ -85,6 +85,56 @@ describe('Bloglist app', function() {
           .click()
         cy.get('html').should('not.contain', 'existing blog with a title')
           .and('contain', 'blog removed successfully')
+      })
+    })
+
+    describe('when several blogs exist', function() {
+      beforeEach(function() {
+        cy.createBlog({
+          title: 'first blog',
+          author: 'test author',
+          url: 'http://example.com/',
+          likes: 1
+        })
+
+        cy.createBlog({
+          title: 'second blog',
+          author: 'test author',
+          url: 'http://example.com/',
+          likes: 5
+        })
+
+        cy.createBlog({
+          title: 'third blog',
+          author: 'test author',
+          url: 'http://example.com/',
+          likes: 100
+        })
+      })
+
+      it('blogs are ordered by likes', function() {
+        cy.get('.blog-expanded').eq(0).should('contain', 'third blog')
+        cy.get('.blog-expanded').eq(1).should('contain', 'second blog')
+        cy.get('.blog-expanded').eq(2).should('contain', 'first blog')
+
+        cy.contains('first blog').find('button').click()
+        cy.get('.blog-expanded').eq(2).find('button').contains('like').as('likesButton')
+        cy.get('.blog-expanded').eq(2).as('likesCount')
+
+        cy.get('@likesButton').click()
+        cy.get('@likesCount').contains('likes: 2')
+        cy.get('@likesButton').click()
+        cy.get('@likesCount').contains('likes: 3')
+        cy.get('@likesButton').click()
+        cy.get('@likesCount').contains('likes: 4')
+        cy.get('@likesButton').click()
+        cy.get('@likesCount').contains('likes: 5')
+        cy.get('@likesButton').click()
+        cy.get('@likesCount').contains('likes: 6')
+
+        cy.get('.blog-expanded').eq(0).should('contain', 'third blog')
+        cy.get('.blog-expanded').eq(1).should('contain', 'first blog')
+        cy.get('.blog-expanded').eq(2).should('contain', 'second blog')
       })
     })
   })
