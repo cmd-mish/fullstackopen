@@ -44,15 +44,37 @@ describe('Bloglist app', function() {
       cy.login({ username: 'frontend', password: 'test' })
     })
 
-    it.only('a blog can be created', function() {
+    it('a blog can be created', function() {
       cy.contains('create a new blog').click()
 
-      cy.get('#blog-form-title').type('blog tittle added from cypress')
+      cy.get('#blog-form-title').type('blog title added from cypress')
       cy.get('#blog-form-author').type('cypress author')
       cy.get('#blog-form-url').type('https://www.cypress.io/')
       cy.get('#blog-form-submit-button').click()
 
-      cy.get('.blog-default').should('contain', 'blog tittle added from cypress')
+      cy.get('.blog-default').should('contain', 'blog title added from cypress')
+    })
+
+    describe('when a blog exists', function() {
+      beforeEach(function() {
+        cy.createBlog({
+          title: 'existing blog with a title',
+          author: 'cypress author',
+          url: 'https://www.cypress.io/'
+        })
+      })
+
+      it.only('user can like a blog', function() {
+        cy.contains('existing blog with a title').find('button').contains('view').click()
+        cy.get('.blog-expanded')
+          .should('contain', 'existing blog with a title')
+          .find('button')
+          .contains('like')
+          .click()
+        cy.get('.blog-expanded')
+          .should('contain', 'existing blog with a title')
+          .and('contain', 'likes: 1')
+      })
     })
   })
 })
