@@ -18,6 +18,7 @@ const LoginForm = ({ loginFunction }) => {
       <div>
         username
         <input
+          id="login-form-username"
           type="text"
           value={username}
           name="Username"
@@ -27,13 +28,14 @@ const LoginForm = ({ loginFunction }) => {
       <div>
         password
         <input
+          id="login-form-password"
           type="password"
           value={password}
           name="Password"
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
-      <button type="submit">login</button>
+      <button type="submit" id="login-form-sumbit-button">login</button>
     </form>
   )
 }
