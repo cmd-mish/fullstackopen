@@ -64,7 +64,7 @@ describe('Bloglist app', function() {
         })
       })
 
-      it.only('user can like a blog', function() {
+      it('user can like a blog', function() {
         cy.contains('existing blog with a title').find('button').contains('view').click()
         cy.get('.blog-expanded')
           .should('contain', 'existing blog with a title')
@@ -74,6 +74,17 @@ describe('Bloglist app', function() {
         cy.get('.blog-expanded')
           .should('contain', 'existing blog with a title')
           .and('contain', 'likes: 1')
+      })
+
+      it.only('user can delete a blog', function() {
+        cy.contains('existing blog with a title').find('button').contains('view').click()
+        cy.get('.blog-expanded')
+          .should('contain', 'existing blog with a title')
+          .find('button')
+          .contains('remove')
+          .click()
+        cy.get('html').should('not.contain', 'existing blog with a title')
+          .and('contain', 'blog removed successfully')
       })
     })
   })
