@@ -38,4 +38,21 @@ describe('Bloglist app', function() {
         .and('have.css', 'color', 'rgb(255, 0, 0)')
     })
   })
+
+  describe('when logged in', function() {
+    beforeEach(function() {
+      cy.login({ username: 'frontend', password: 'test' })
+    })
+
+    it.only('a blog can be created', function() {
+      cy.contains('create a new blog').click()
+
+      cy.get('#blog-form-title').type('blog tittle added from cypress')
+      cy.get('#blog-form-author').type('cypress author')
+      cy.get('#blog-form-url').type('https://www.cypress.io/')
+      cy.get('#blog-form-submit-button').click()
+
+      cy.get('.blog-default').should('contain', 'blog tittle added from cypress')
+    })
+  })
 })
