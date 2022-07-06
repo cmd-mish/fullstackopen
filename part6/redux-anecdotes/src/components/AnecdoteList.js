@@ -4,10 +4,13 @@ import { vote } from '../reducers/anecdoteReducer'
 const AnecdoteList = ({ notification }) => {
   const dispatch = useDispatch()
   const anecdotes = useSelector(state => state.anecdotes)
+  const search = useSelector(state => state.filter)
 
+  const filtered = anecdotes
+    .filter(anecdote => anecdote.content.toLowerCase().indexOf(search.toLowerCase()) !== -1)
   return (
     <div>
-      {anecdotes
+      {filtered
         .slice()
         .sort((a, b) => b.votes - a.votes)
         .map(anecdote =>
