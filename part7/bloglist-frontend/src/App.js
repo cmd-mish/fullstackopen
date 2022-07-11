@@ -9,7 +9,7 @@ import Togglable from './components/Togglable'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { setNotification } from './reducers/notificationReducer'
-import { initializeBlogs, createBlog } from './reducers/blogReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 
 const App = () => {
   const [user, setUser] = useState(null)
@@ -28,35 +28,6 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-
-  const addBlog = (blogObject) => {
-    blogFormRef.current.toggleVisibility()
-    dispatch(createBlog(blogObject))
-    dispatch(setNotification(`a new blog "${blogObject.title}" added`, 'success', 5000))
-  }
-
-  const changeLikes = (id, updatedBlogObject) => {
-    blogService
-      .update(id, updatedBlogObject)
-      // .then(returnedBlog => {
-      //   // setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
-      // })
-      .catch(error => {
-        dispatch(setNotification(error.response.statusText, 'error', 5000))
-      })
-  }
-
-  const removeBlog = (id) => {
-    blogService
-      .remove(id)
-      .then(() => {
-        // setBlogs(blogs.filter(blog => blog.id !== id))
-        dispatch(setNotification('blog removed successfully', 'success', 5000))
-      })
-      .catch(error => {
-        dispatch(setNotification(error.response.statusText, 'error', 5000))
-      })
-  }
 
   const handleLogin = async (userObject) => {
     try {
@@ -100,7 +71,7 @@ const App = () => {
             <h2>create new blog</h2>
             <Togglable buttonLabel='create a new blog' ref={blogFormRef}>
               <BlogForm
-                createBlog={addBlog}
+                visibility={blogFormRef}
               />
             </Togglable>
           </div>
@@ -113,9 +84,7 @@ const App = () => {
               <Blog
                 key={blog.id}
                 blog={blog}
-                changeLikes={changeLikes}
                 currentUserId={user.id}
-                removeBlog={removeBlog}
               />
             )
           }

@@ -1,8 +1,11 @@
 import { useState } from 'react'
-// import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-const Blog = ({ blog, changeLikes, currentUserId, removeBlog }) => {
+const Blog = ({ blog, currentUserId }) => {
   const [expanded, setExpanded] = useState(false)
+  const dispatch = useDispatch()
 
   const hideWhenExpanded = { display: expanded ? 'none' : '' }
   const showWhenExpanded = { display: expanded ? '' : 'none' }
@@ -15,12 +18,18 @@ const Blog = ({ blog, changeLikes, currentUserId, removeBlog }) => {
       likes: blog.likes + 1
     }
 
-    changeLikes(blog.id, updatedBlogObject)
+    dispatch(likeBlog(updatedBlogObject))
   }
 
   const removeThisBlog = () => {
     if (window.confirm(`Remove blog "${blog.title}"?`)) {
-      removeBlog(blog.id)
+      dispatch(deleteBlog(blog.id))
+        .then(() => {
+          dispatch(setNotification(`blog "${blog.title}" removed`, 'success', 5000))
+        })
+        .catch((error) => {
+          dispatch(setNotification(error.message, 'error', 5000))
+        })
     }
   }
 
@@ -53,15 +62,5 @@ const Blog = ({ blog, changeLikes, currentUserId, removeBlog }) => {
     </div>
   )
 }
-
-// Blog.propTypes = {
-//   blog: PropTypes.object.isRequired,
-//   changeLikes: PropTypes.func.isRequired,
-//   currentUserId: PropTypes.oneOfType([
-//     PropTypes.object.isRequired,
-//     PropTypes.string.isRequired
-//   ]),
-//   removeBlog: PropTypes.func.isRequired
-// }
 
 export default Blog
