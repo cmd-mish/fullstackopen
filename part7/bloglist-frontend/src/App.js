@@ -6,14 +6,14 @@ import BlogForm from './components/BlogForm'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import { useDispatch } from 'react-redux'
+import { setNotification } from './reducers/notificationReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-
   const [user, setUser] = useState(null)
 
-  const [notification, setNotification] = useState(null)
-  const [notificationStatus, setNotificationStatus] = useState(null)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -37,10 +37,10 @@ const App = () => {
       .create(blogObject)
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
-        displayNotification(`a new blog "${blogObject.title}" added`, 'success')
+        dispatch(setNotification(`a new blog "${blogObject.title}" added`, 'success', 5000))
       })
       .catch(error => {
-        displayNotification(error.response.statusText, 'error')
+        dispatch(setNotification(error.response.statusText, 'error', 5000))
       })
   }
 
@@ -51,7 +51,7 @@ const App = () => {
         setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
       })
       .catch(error => {
-        displayNotification(error.response.statusText, 'error')
+        dispatch(setNotification(error.response.statusText, 'error', 5000))
       })
   }
 
@@ -60,10 +60,10 @@ const App = () => {
       .remove(id)
       .then(() => {
         setBlogs(blogs.filter(blog => blog.id !== id))
-        displayNotification('blog removed successfully', 'success')
+        dispatch(setNotification('blog removed successfully', 'success', 5000))
       })
       .catch(error => {
-        displayNotification(error.response.data.error, 'error')
+        dispatch(setNotification(error.response.statusText, 'error', 5000))
       })
   }
 
@@ -76,31 +76,22 @@ const App = () => {
 
       blogService.setToken(user.token)
       setUser(user)
-      displayNotification(`welcome, ${user.name}!`, 'success')
+      dispatch(setNotification(`welcome, ${user.name}!`, 'success', 5000))
     } catch (exception) {
-      displayNotification(exception.response.data.error, 'error')
+      dispatch(setNotification(exception.response.data.error, 'error', 5000))
     }
   }
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedInUser')
-    displayNotification(`see you, ${user.name}!`, 'success')
+    dispatch(setNotification(`see you, ${user.name}!`, 'success', 5000))
     setUser(null)
   }
-
-  const displayNotification = (message, status) => {
-    setNotification(message)
-    setNotificationStatus(status)
-    setTimeout(() => {
-      setNotification(null)
-    }, 5000)
-  }
-
   const blogFormRef = useRef()
 
   return (
     <div>
-      <Notification message={notification} status={notificationStatus} />
+      <Notification />
       {user === null ?
         <div>
           <h2>log in to application</h2>
