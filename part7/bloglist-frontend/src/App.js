@@ -6,20 +6,19 @@ import BlogForm from './components/BlogForm'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+
 import { setNotification } from './reducers/notificationReducer'
+import { initializeBlogs, createBlog } from './reducers/blogReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-
   const dispatch = useDispatch()
+  const blogs = useSelector(state => state.blogs)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedInUser')
@@ -32,24 +31,16 @@ const App = () => {
 
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
-
-    blogService
-      .create(blogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        dispatch(setNotification(`a new blog "${blogObject.title}" added`, 'success', 5000))
-      })
-      .catch(error => {
-        dispatch(setNotification(error.response.statusText, 'error', 5000))
-      })
+    dispatch(createBlog(blogObject))
+    dispatch(setNotification(`a new blog "${blogObject.title}" added`, 'success', 5000))
   }
 
   const changeLikes = (id, updatedBlogObject) => {
     blogService
       .update(id, updatedBlogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
-      })
+      // .then(returnedBlog => {
+      //   // setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+      // })
       .catch(error => {
         dispatch(setNotification(error.response.statusText, 'error', 5000))
       })
@@ -59,7 +50,7 @@ const App = () => {
     blogService
       .remove(id)
       .then(() => {
-        setBlogs(blogs.filter(blog => blog.id !== id))
+        // setBlogs(blogs.filter(blog => blog.id !== id))
         dispatch(setNotification('blog removed successfully', 'success', 5000))
       })
       .catch(error => {
@@ -114,6 +105,7 @@ const App = () => {
             </Togglable>
           </div>
           {blogs
+            .slice()
             .sort((a, b) =>
               b.likes - a.likes
             )
