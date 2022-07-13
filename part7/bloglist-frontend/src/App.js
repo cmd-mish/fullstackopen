@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
 import {
-  Routes, Route
+  Routes, Route, useMatch
 } from 'react-router-dom'
 
 import UserInfo from './components/UserInfo'
 import Users from './components/Users'
+import User from './components/User'
 import Blogs from './components/Blogs'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
@@ -20,7 +21,7 @@ const App = () => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.user)
   const blogs = useSelector(state => state.blogs)
-  const users = useSelector(state => state.users)
+  const userList = useSelector(state => state.users)
 
   useEffect(() => {
     if (user !== null) {
@@ -38,6 +39,11 @@ const App = () => {
     }
   }, [])
 
+  const match = useMatch('/users/:id')
+  const individualUser = match
+    ? userList.find(user => user.id === (match.params.id))
+    : null
+
   return (
     <div>
       <Notification />
@@ -47,7 +53,8 @@ const App = () => {
           <UserInfo user={user} />
           <Routes>
             <Route path='/' element={<Blogs user={user} blogs={blogs} />} />
-            <Route path='/users' element={<Users users={users} />} />
+            <Route path='/users' element={<Users users={userList} />} />
+            <Route path='/users/:id' element={<User user={individualUser} />} />
           </Routes>
         </div>
       }
