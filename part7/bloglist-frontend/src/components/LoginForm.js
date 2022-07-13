@@ -18,29 +18,33 @@ const LoginForm = () => {
     setPassword('')
   }
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input
-          id="login-form-username"
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          id="login-form-password"
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit" id="login-form-sumbit-button">login</button>
-    </form>
+    <div>
+      <h2>log in to application</h2>
+      <form onSubmit={handleLogin}>
+        <div>
+          username
+          <input
+            id="login-form-username"
+            type="text"
+            value={username}
+            name="Username"
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
+          password
+          <input
+            id="login-form-password"
+            type="password"
+            value={password}
+            name="Password"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <button type="submit" id="login-form-sumbit-button">login</button>
+      </form>
+    </div>
+
   )
 }
 
