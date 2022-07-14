@@ -3,13 +3,13 @@ import {
   Routes, Route, useMatch, Navigate
 } from 'react-router-dom'
 
-import UserInfo from './components/UserInfo'
 import Users from './components/Users'
 import User from './components/User'
 import Blog from './components/Blog'
 import Blogs from './components/Blogs'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
+import Navigation from './components/Navigation'
 
 import blogService from './services/blogs'
 
@@ -56,7 +56,7 @@ const App = () => {
       {user === null ?
         <LoginForm /> :
         <div>
-          <UserInfo user={user} />
+          <Navigation user={user} />
           <Routes>
             <Route path='/' element={<Navigate replace to="/blogs" />} />
             <Route path='/blogs' element={<Blogs blogs={blogs} />} />

@@ -18,7 +18,6 @@ const Blogs = ({ blogs }) => {
   return (
     <div>
       <div>
-        <h2>create new blog</h2>
         <Togglable buttonLabel='create a new blog' ref={blogFormRef}>
           <BlogForm
             visibility={blogFormRef}

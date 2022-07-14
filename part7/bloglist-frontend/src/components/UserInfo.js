@@ -5,11 +5,8 @@ const UserInfo = ({ user }) => {
   const dispatch = useDispatch()
   return (
     <div>
-      <h2>blogs</h2>
-      <p>
-        {user.name} is logged in
-        <button onClick={() => dispatch(processLogout(user.name))}>logout</button>
-      </p>
+      {user.name} is logged in
+      <button onClick={() => dispatch(processLogout(user.name))}>logout</button>
     </div>
   )
 }
