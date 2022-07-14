@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux'
 import { likeBlog, deleteBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 const Blog = ({ blog, currentUserId }) => {
   if (!blog) {
@@ -40,6 +40,7 @@ const Blog = ({ blog, currentUserId }) => {
         <i>url:</i> <a href={blog.url}>{blog.url}</a><br />
         <i>likes:</i> {blog.likes} <button onClick={addLike}>like</button><br />
         <i>author:</i> {blog.author}<br />
+        <i>added by:</i> <Link to={`/users/${blog.user.id}`}>{blog.user.username}</Link><br />
         {(currentUserId === blog.user.id || currentUserId === blog.user) ?
           <button onClick={removeThisBlog}>remove</button>
           : ''
