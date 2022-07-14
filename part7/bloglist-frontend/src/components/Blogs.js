@@ -1,10 +1,19 @@
 import { useRef } from 'react'
 import Togglable from './Togglable'
 import BlogForm from './BlogForm'
-import Blog from './Blog'
+import { Link } from 'react-router-dom'
 
-const Blogs = ({ user, blogs }) => {
+const Blogs = ({ blogs }) => {
   const blogFormRef = useRef()
+
+  const blogItemStyle = {
+    margin: 5,
+    padding: 5,
+    border: 'solid',
+    borderWidth: 1,
+    minWidth: '280px',
+    width: 'fit-content'
+  }
 
   return (
     <div>
@@ -22,11 +31,9 @@ const Blogs = ({ user, blogs }) => {
           b.likes - a.likes
         )
         .map(blog =>
-          <Blog
-            key={blog.id}
-            blog={blog}
-            currentUserId={user.id}
-          />
+          <div style={blogItemStyle} key={blog.id}>
+            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+          </div>
         )
       }
     </div>

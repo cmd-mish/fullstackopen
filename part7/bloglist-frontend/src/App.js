@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
 import {
-  Routes, Route, useMatch
+  Routes, Route, useMatch, Navigate
 } from 'react-router-dom'
 
 import UserInfo from './components/UserInfo'
 import Users from './components/Users'
 import User from './components/User'
+import Blog from './components/Blog'
 import Blogs from './components/Blogs'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
@@ -39,9 +40,14 @@ const App = () => {
     }
   }, [])
 
-  const match = useMatch('/users/:id')
-  const individualUser = match
-    ? userList.find(user => user.id === (match.params.id))
+  const matchUser = useMatch('/users/:id')
+  const individualUser = matchUser
+    ? userList.find(user => user.id === (matchUser.params.id))
+    : null
+
+  const matchBlog = useMatch('/blogs/:id')
+  const individualBlog = matchBlog
+    ? blogs.find(blog => blog.id === (matchBlog.params.id))
     : null
 
   return (
@@ -52,7 +58,9 @@ const App = () => {
         <div>
           <UserInfo user={user} />
           <Routes>
-            <Route path='/' element={<Blogs user={user} blogs={blogs} />} />
+            <Route path='/' element={<Navigate replace to="/blogs" />} />
+            <Route path='/blogs' element={<Blogs blogs={blogs} />} />
+            <Route path='/blogs/:id' element={<Blog blog={individualBlog} currentUserId={user.id} />} />
             <Route path='/users' element={<Users users={userList} />} />
             <Route path='/users/:id' element={<User user={individualUser} />} />
           </Routes>

@@ -1,16 +1,15 @@
-import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { likeBlog, deleteBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { useNavigate } from 'react-router-dom'
 
 const Blog = ({ blog, currentUserId }) => {
-  const [expanded, setExpanded] = useState(false)
+  if (!blog) {
+    return <h3>blog not found</h3>
+  }
+
   const dispatch = useDispatch()
-
-  const hideWhenExpanded = { display: expanded ? 'none' : '' }
-  const showWhenExpanded = { display: expanded ? '' : 'none' }
-
-  const toggleExpansion = () => setExpanded(!expanded)
+  const navigate = useNavigate()
 
   const addLike = () => {
     const updatedBlogObject = {
@@ -26,6 +25,7 @@ const Blog = ({ blog, currentUserId }) => {
       dispatch(deleteBlog(blog.id))
         .then(() => {
           dispatch(setNotification(`blog "${blog.title}" removed`, 'success', 5000))
+          navigate('/blogs')
         })
         .catch((error) => {
           dispatch(setNotification(error.message, 'error', 5000))
@@ -33,24 +33,10 @@ const Blog = ({ blog, currentUserId }) => {
     }
   }
 
-  const blogStyle = {
-    margin: 5,
-    padding: 5,
-    border: 'solid',
-    borderWidth: 1,
-    minWidth: '280px',
-    width: 'fit-content'
-  }
-
   return (
-    <div style={blogStyle}>
-      <div style={hideWhenExpanded} className='blog-default'>
-        {blog.title}&nbsp;
-        <button onClick={toggleExpansion}>view</button>
-      </div>
-      <div style={showWhenExpanded} className='blog-expanded'>
-        {blog.title}&nbsp;
-        <button onClick={toggleExpansion}>hide</button><br />
+    <div>
+      <div>
+        <h2>{blog.title}</h2>
         <i>url:</i> <a href={blog.url}>{blog.url}</a><br />
         <i>likes:</i> {blog.likes} <button onClick={addLike}>like</button><br />
         <i>author:</i> {blog.author}<br />
