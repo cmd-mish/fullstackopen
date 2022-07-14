@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import { likeBlog, deleteBlog, commentBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { useNavigate, Link } from 'react-router-dom'
 
@@ -7,6 +8,8 @@ const Blog = ({ blog, currentUserId }) => {
   if (!blog) {
     return <h3>blog not found</h3>
   }
+
+  const [newComment, setNewComment] = useState('')
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -18,6 +21,17 @@ const Blog = ({ blog, currentUserId }) => {
     }
 
     dispatch(likeBlog(updatedBlogObject))
+  }
+
+  const addComment = (event) => {
+    event.preventDefault()
+
+    const commentObject = {
+      comment: newComment
+    }
+
+    dispatch(commentBlog(blog.id, commentObject))
+    setNewComment('')
   }
 
   const removeThisBlog = () => {
@@ -45,18 +59,25 @@ const Blog = ({ blog, currentUserId }) => {
           <button onClick={removeThisBlog}>remove</button>
           : ''
         }
+        <h3>comments</h3>
+        <form onSubmit={addComment}>
+          <input
+            type='text'
+            value={newComment}
+            onChange={({ target }) => setNewComment(target.value)}
+          />
+          <button type='submit'>add comment</button>
+        </form>
         {blog.comments.length > 0 ?
           <div>
-            <h3>comments</h3>
             <ul>
               {blog.comments.map(comment =>
-                <li key={comment.id}>{comment.comment}</li>
+                <li key={comment._id}>{comment.comment}</li>
               )}
             </ul>
-          </div> : ''
+          </div> :
+          <div><i>no comments yet</i></div>
         }
-
-
       </div>
     </div>
   )

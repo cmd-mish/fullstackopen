@@ -14,6 +14,12 @@ blogsRouter.get('/:id', async (request, response) => {
   response.json(blog)
 })
 
+blogsRouter.get('/:id/comments', async (request, response) => {
+  const blog = await Blog
+    .findById(request.params.id)
+  response.json(blog.comments)
+})
+
 blogsRouter.post('/', userExtractor, async (request, response) => {
   const body = request.body
 
@@ -35,6 +41,29 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 
     response.status(201).json(savedBlog)
   }
+})
+
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const content = request.body.comment
+  const id = request.params.id
+  const blog = await Blog.findById(id)
+
+  if (content && blog) {
+    const updatedBlogObject = {
+      ...blog._doc,
+      comments: [
+        ...blog._doc.comments,
+        {
+          comment: content
+        }
+      ]
+    }
+
+    const result = await Blog.findByIdAndUpdate(id, updatedBlogObject, { new: true })
+    return response.json(result)
+  }
+
+  response.status(400).end()
 })
 
 blogsRouter.delete('/:id', userExtractor, async (request, response) => {

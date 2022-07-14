@@ -10,7 +10,6 @@ const blogSchema = new mongoose.Schema({
     ref: 'User'
   },
   comments: [{
-    id: mongoose.Schema.Types.ObjectId,
     comment: String
   }]
 })
