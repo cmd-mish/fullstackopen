@@ -8,6 +8,12 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
+blogsRouter.get('/:id', async (request, response) => {
+  const blog = await Blog
+    .findById(request.params.id)
+  response.json(blog)
+})
+
 blogsRouter.post('/', userExtractor, async (request, response) => {
   const body = request.body
 
@@ -64,7 +70,7 @@ blogsRouter.put('/:id', userExtractor, async (request, response) => {
       title: title,
       likes: likes,
       author: author,
-      url: url, 
+      url: url,
       user: user.id
     }
 
