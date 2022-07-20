@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import {
-  Routes, Route, useMatch, Navigate
+  Routes, Route, useMatch, Navigate, useNavigate, useLocation
 } from 'react-router-dom'
 
 import Users from './components/Users'
@@ -23,11 +23,14 @@ const App = () => {
   const user = useSelector(state => state.user)
   const blogs = useSelector(state => state.blogs)
   const userList = useSelector(state => state.users)
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (user !== null) {
       dispatch(initializeBlogs())
       dispatch(getUserList())
+    } else {
+      navigate('/')
     }
   }, [dispatch, user])
 
@@ -50,13 +53,15 @@ const App = () => {
     ? blogs.find(blog => blog.id === (matchBlog.params.id))
     : null
 
+  const location = useLocation().pathname
+
   return (
-    <div>
+    <div className='container'>
       <Notification />
       {user === null ?
         <LoginForm /> :
         <div>
-          <Navigation user={user} />
+          <Navigation user={user} location={location} />
           <Routes>
             <Route path='/' element={<Navigate replace to="/blogs" />} />
             <Route path='/blogs' element={<Blogs blogs={blogs} />} />
