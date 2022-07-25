@@ -1,10 +1,23 @@
 import { useQuery } from '@apollo/client'
-import { useState } from 'react'
-import { ALL_BOOKS } from '../queries'
+import { useState, useEffect } from 'react'
+import { ALL_BOOKS, ALL_BOOKS_GENRES } from '../queries'
 
 const Books = (props) => {
-  const result = useQuery(ALL_BOOKS)
-  const [genreFilter, setGenreFilter] = useState('all')
+  const [genreFilter, setGenreFilter] = useState(null)
+  const [books, setBooks] = useState(null)
+
+  const genres = useQuery(ALL_BOOKS_GENRES)
+  const result = useQuery(ALL_BOOKS, {
+    variables: {
+      genre: genreFilter
+    }
+  })
+
+  useEffect(() => {
+    if (result.data) {
+      setBooks(result.data.allBooks)
+    }
+  }, [result.data])
 
   if (!props.show) {
     return null
@@ -13,15 +26,12 @@ const Books = (props) => {
   if (result.loading) {
     <div>loading...</div>
   }
-
-  const books = result.data.allBooks
-  const allGenres = result.data.allBooks.flatMap(book => book.genres)
+  const allGenres = genres.data.allBooks.flatMap(book => book.genres)
   const uniqueGenres = [...new Set(allGenres)]
 
   return (
     <div>
       <h2>books</h2>
-
       <table>
         <tbody>
           <tr>
@@ -31,7 +41,6 @@ const Books = (props) => {
             <th>genres</th>
           </tr>
           {books
-            .filter(book => genreFilter !== 'all' ? book.genres.includes(genreFilter) : true)
             .map(book => (
               <tr key={book.title}>
                 <td>{book.title}</td>
@@ -61,7 +70,7 @@ const Books = (props) => {
             value='all'
             name='genre-filter'
             defaultChecked={true}
-            onChange={() => setGenreFilter('all')}
+            onChange={() => setGenreFilter(null)}
           />
           all genres
         </label>
