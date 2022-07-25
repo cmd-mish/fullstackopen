@@ -36,26 +36,32 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <AuthorsForm />
+      <AuthorsForm loggedin={props.loggedin} />
     </div>
   )
 }
 
-const AuthorsForm = () => {
-  const [name, setName] = useState('')
+const AuthorsForm = ({ loggedin }) => {
+  const [name, setName] = useState(authors[0].name)
   const [bornString, setBornString] = useState('')
 
   const [changeBorn] = useMutation(EDIT_AUTHOR, {
-    refetchQueries: [{ query: ALL_AUTHORS }]
+    refetchQueries: [{ query: ALL_AUTHORS }],
+    onError: (error) => {
+      console.log(error.graphQLErrors[0].message)
+    }
   })
 
   const submit = async (event) => {
     event.preventDefault()
-    const born = parseInt(bornString, 10)
+    const setBornTo = parseInt(bornString, 10)
 
-    changeBorn({ variables: { name, born } })
-    setName('')
+    changeBorn({ variables: { name, setBornTo } })
     setBornString('')
+  }
+
+  if (!loggedin) {
+    return null
   }
 
   return (
@@ -66,7 +72,7 @@ const AuthorsForm = () => {
           name
           <select onChange={({ target }) => setName(target.value)}>
             {authors.map(a => (
-              <option value={a.name}>{a.name}</option>
+              <option value={a.name} key={a.name}>{a.name}</option>
             ))}
           </select >
         </div>
