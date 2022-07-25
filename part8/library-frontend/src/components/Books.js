@@ -1,8 +1,10 @@
 import { useQuery } from '@apollo/client'
+import { useState } from 'react'
 import { ALL_BOOKS } from '../queries'
 
 const Books = (props) => {
   const result = useQuery(ALL_BOOKS)
+  const [genreFilter, setGenreFilter] = useState('all')
 
   if (!props.show) {
     return null
@@ -13,6 +15,8 @@ const Books = (props) => {
   }
 
   const books = result.data.allBooks
+  const allGenres = result.data.allBooks.flatMap(book => book.genres)
+  const uniqueGenres = [...new Set(allGenres)]
 
   return (
     <div>
@@ -21,20 +25,50 @@ const Books = (props) => {
       <table>
         <tbody>
           <tr>
-            <th></th>
+            <th>title</th>
             <th>author</th>
             <th>published</th>
+            <th>genres</th>
           </tr>
-          {books.map((a) => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
-            </tr>
-          ))}
+          {books
+            .filter(book => genreFilter !== 'all' ? book.genres.includes(genreFilter) : true)
+            .map(book => (
+              <tr key={book.title}>
+                <td>{book.title}</td>
+                <td>{book.author.name}</td>
+                <td>{book.published}</td>
+                <td>{book.genres.join(', ')}</td>
+              </tr>
+            ))}
         </tbody>
       </table>
-    </div>
+      <form>
+        {uniqueGenres.map(genre => (
+          <label key={genre}>
+            <input
+              type='radio'
+              value={genre}
+              name='genre-filter'
+              onChange={({ target }) => setGenreFilter(target.value)}
+            />
+            {genre}
+          </label>
+        ))}
+        <label>
+          <input
+            type='radio'
+            key='all'
+            value='all'
+            name='genre-filter'
+            defaultChecked={true}
+            onChange={() => setGenreFilter('all')}
+          />
+          all genres
+        </label>
+      </form>
+
+
+    </div >
   )
 }
 
