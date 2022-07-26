@@ -10,7 +10,8 @@ const Books = (props) => {
   const result = useQuery(ALL_BOOKS, {
     variables: {
       genre: genreFilter
-    }
+    },
+    fetchPolicy: 'network-only'
   })
 
   useEffect(() => {
@@ -28,6 +29,11 @@ const Books = (props) => {
   }
   const allGenres = genres.data.allBooks.flatMap(book => book.genres)
   const uniqueGenres = [...new Set(allGenres)]
+
+  const switchFilter = (value) => {
+    setGenreFilter(value)
+    genres.refetch({ query: ALL_BOOKS_GENRES })
+  }
 
   return (
     <div>
@@ -58,7 +64,7 @@ const Books = (props) => {
               type='radio'
               value={genre}
               name='genre-filter'
-              onChange={({ target }) => setGenreFilter(target.value)}
+              onChange={({ target }) => switchFilter(target.value)}
             />
             {genre}
           </label>
@@ -70,7 +76,7 @@ const Books = (props) => {
             value='all'
             name='genre-filter'
             defaultChecked={true}
-            onChange={() => setGenreFilter(null)}
+            onChange={() => switchFilter(null)}
           />
           all genres
         </label>
