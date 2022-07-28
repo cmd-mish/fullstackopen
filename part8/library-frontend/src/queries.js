@@ -54,7 +54,7 @@ export const BOOK_ADDED = gql`
 `
 
 export const ALL_BOOKS_GENRES = gql`
-  query {
+  query allBooksGenres {
     allBooks {
       genres
     }
