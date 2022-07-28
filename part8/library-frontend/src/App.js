@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient, useQuery, useSubscription } from '@apollo/client'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
 import Recommendations from './components/Recommendations'
-import { USER } from './queries'
+import { BOOK_ADDED, USER } from './queries'
 
 const App = () => {
   const [page, setPage] = useState('authors')
@@ -25,13 +25,20 @@ const App = () => {
   useEffect(() => {
     if (!user.loading && user.data.me) {
       setCurrentUser(user.data)
-      console.log(currentUser)
     }
   }, [user.data]) // eslint-disable-line
 
   useEffect(() => {
     setToken(localStorage.getItem('library-user-token'))
   }, [])
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      window.alert(
+        `A new book ${subscriptionData.data.bookAdded.title} has been added! Refresh the page to see it!`
+      )
+    }
+  })
 
   return (
     <div>
