@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "ts-node": "ts-node"
+    "ts-node": "ts-node",
+    "calculateBmi": "ts-node bmiCalculator.ts"
   },
   "devDependencies": {
     "ts-node": "^10.9.1",
