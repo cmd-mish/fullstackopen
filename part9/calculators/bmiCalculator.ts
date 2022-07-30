@@ -1,4 +1,13 @@
-const calculateBmi = (height: number, weight: number): string => {
+const calculateBmi = (args: Array<string>): string => {
+  if (args.length < 4) throw Error('Not enough arguments');
+  if (args.length > 4) throw Error('Too many arguments');
+
+  const height = Number(args[2]);
+  const weight = Number(args[3]);
+
+  if (isNaN(height) || isNaN(weight)) 
+    throw new Error('Both height and weight must be numbers');
+
   const bmi = Math.round((weight / Math.pow(height / 100, 2)) * 10) / 10;
 
   if (bmi < 0) return 'Underweight (Severe thinness)';
@@ -9,6 +18,15 @@ const calculateBmi = (height: number, weight: number): string => {
   if (bmi <= 34.9) return 'Obese (Class I)';
   if (bmi <= 39.9) return 'Obese (Class II)';
   if (bmi > 39.9) return 'Obese (Class III)';
+  throw new Error('Values can\'t be zero!');
 }
 
-console.log(calculateBmi(180, 74))
+try {
+  console.log(calculateBmi(process.argv));
+} catch (error: unknown) {
+  if (error instanceof Error) {
+    console.log('Error:', error.message);
+  } else {
+    console.log('Error occured!');
+  }
+}

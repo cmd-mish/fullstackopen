@@ -8,7 +8,18 @@ interface Result {
   average: number;
 }
 
-const calculateExercises = (exercises: Array<number>, target: number): Result => {
+const calculateExercises = (args: Array<string>): Result => {
+  if (args.length < 5) 
+    throw Error('Not enough arguments! Provide at least one target value and two day values!');
+
+  const parameters = args.slice(2);
+  
+  if (!parameters.every(arg => (!isNaN(Number(arg)) && Number(arg) >= 0))) 
+    throw new Error('All additional parameters must be positive numbers or zeros!');
+  
+  const target = Number(args[2]);
+  const exercises = args.slice(3).map(arg => Number(arg));
+  
   const periodLength = exercises.length;
   const trainingDays = exercises.filter(day => day !== 0).length;
 
@@ -36,4 +47,13 @@ const calculateExercises = (exercises: Array<number>, target: number): Result =>
   }
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
+
+try {
+  console.log(calculateExercises(process.argv));
+} catch (error: unknown) {
+  if (error instanceof Error) {
+    console.log('Error:', error.message);
+  } else {
+    console.log('Error occured!');
+  }
+}
