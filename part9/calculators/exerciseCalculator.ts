@@ -8,7 +8,7 @@ interface Result {
   average: number;
 }
 
-const calculateExercises = (args: Array<string>): Result => {
+export const calculateExercises = (args: Array<string>): Result => {
   if (args.length < 5) 
     throw Error('Not enough arguments! Provide at least one target value and two day values!');
 
