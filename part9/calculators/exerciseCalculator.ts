@@ -44,8 +44,8 @@ const calculateExercises = (args: Array<string>): Result => {
 
   return {
     periodLength, trainingDays, success, rating, ratingDescription, target, average
-  }
-}
+  };
+};
 
 
 try {

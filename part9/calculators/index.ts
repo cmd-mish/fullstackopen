@@ -5,7 +5,7 @@ const app = express();
 
 app.get('/hello', (_req, res) => {
   res.send('Hello Full Stack!');
-})
+});
 
 app.get('/bmi', (req, res) => {
   const height = Number(req.query.height);
@@ -18,7 +18,7 @@ app.get('/bmi', (req, res) => {
     const responseObject = {
     height, weight,
     bmi: calculateBmi(['', '', height.toString(), weight.toString()])
-    }
+    };
 
     return res.send(JSON.stringify(responseObject));
   } catch (error: unknown) {
@@ -28,10 +28,10 @@ app.get('/bmi', (req, res) => {
       return res.status(400).end();
     }
   }
-})
+});
 
 const PORT = 3003;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}!`);
-})
+});

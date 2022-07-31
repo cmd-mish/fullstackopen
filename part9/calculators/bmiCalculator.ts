@@ -19,7 +19,7 @@ export const calculateBmi = (args: Array<string>): string => {
   if (bmi <= 39.9) return 'Obese (Class II)';
   if (bmi > 39.9) return 'Obese (Class III)';
   throw new Error('Unable to determine bmi');
-}
+};
 
 try {
   console.log(calculateBmi(process.argv));
