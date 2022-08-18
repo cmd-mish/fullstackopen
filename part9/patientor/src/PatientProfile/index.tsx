@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useStateValue, loadPatient } from "../state";
 import { apiBaseUrl } from "../constants";
 
-import { Patient } from "../types";
+import { Patient, Entry } from "../types";
 import { Box, Typography } from "@material-ui/core";
 
 const PatientProfile = () => {
@@ -30,12 +30,32 @@ const PatientProfile = () => {
 
   return (
     <Box marginTop={3}>
-      <Typography align="left" variant="h6">
+      <Typography align="left" variant="h5">
         {state.individualPatients[String(id)].name}
       </Typography>
-      gender: {state.individualPatients[String(id)].gender}<br />
-      ssn: {state.individualPatients[String(id)].ssn}<br />
-      occupation: {state.individualPatients[String(id)].occupation}
+      <Box component="span" sx={{ display: 'block' }}>
+        gender: {state.individualPatients[String(id)].gender}<br />
+        ssn: {state.individualPatients[String(id)].ssn}<br />
+        occupation: {state.individualPatients[String(id)].occupation}
+      </Box>
+
+      <Typography variant="h6">
+        entries
+      </Typography>
+      <Box component="span" sx={{ display: 'block' }}>
+        {state.individualPatients[String(id)].entries.map((entry: Entry) => (
+          <span key={entry.id}>
+            {entry.description}
+            <ul>
+              {entry.diagnosisCodes?.map((code) => (
+                <li key={code}>{code}</li>
+              ))}
+            </ul>
+
+          </span>
+        ))}
+      </Box>
+
     </Box>
   );
 };
