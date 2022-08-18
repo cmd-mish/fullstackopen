@@ -9,7 +9,7 @@ import { Box, Typography } from "@material-ui/core";
 
 const PatientProfile = () => {
   const { id } = useParams<{ id: string }>();
-  const [state, dispatch] = useStateValue();
+  const [{ individualPatients, diagnoses }, dispatch] = useStateValue();
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -21,34 +21,36 @@ const PatientProfile = () => {
       }
     };
 
-    if (!state.individualPatients[String(id)]) {
+    if (!individualPatients[String(id)]) {
       void fetchPatient();
     }
   }, [dispatch]);
 
-  if (!state.individualPatients[String(id)]) return <div>loading...</div>;
+  if (!individualPatients[String(id)]) return <div>loading...</div>;
 
   return (
     <Box marginTop={3}>
       <Typography align="left" variant="h5">
-        {state.individualPatients[String(id)].name}
+        {individualPatients[String(id)].name}
       </Typography>
       <Box component="span" sx={{ display: 'block' }}>
-        gender: {state.individualPatients[String(id)].gender}<br />
-        ssn: {state.individualPatients[String(id)].ssn}<br />
-        occupation: {state.individualPatients[String(id)].occupation}
+        gender: {individualPatients[String(id)].gender}<br />
+        ssn: {individualPatients[String(id)].ssn}<br />
+        occupation: {individualPatients[String(id)].occupation}
       </Box>
 
       <Typography variant="h6">
         entries
       </Typography>
       <Box component="span" sx={{ display: 'block' }}>
-        {state.individualPatients[String(id)].entries.map((entry: Entry) => (
+        {individualPatients[String(id)].entries.map((entry: Entry) => (
           <span key={entry.id}>
             {entry.date} {entry.description}
             <ul>
               {entry.diagnosisCodes?.map((code) => (
-                <li key={code}>{code}</li>
+                <li key={code}>
+                  {code} {diagnoses.find(diagnosis => diagnosis.code === code)?.name}
+                </li>
               ))}
             </ul>
 
