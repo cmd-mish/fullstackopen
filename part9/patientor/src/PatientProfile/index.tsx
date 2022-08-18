@@ -45,7 +45,7 @@ const PatientProfile = () => {
       <Box component="span" sx={{ display: 'block' }}>
         {state.individualPatients[String(id)].entries.map((entry: Entry) => (
           <span key={entry.id}>
-            {entry.description}
+            {entry.date} {entry.description}
             <ul>
               {entry.diagnosisCodes?.map((code) => (
                 <li key={code}>{code}</li>
