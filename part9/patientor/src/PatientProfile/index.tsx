@@ -7,9 +7,11 @@ import { apiBaseUrl } from "../constants";
 import { Patient, Entry } from "../types";
 import { Box, Typography } from "@material-ui/core";
 
+import EntryDetails from './Entries';
+
 const PatientProfile = () => {
   const { id } = useParams<{ id: string }>();
-  const [{ individualPatients, diagnoses }, dispatch] = useStateValue();
+  const [{ individualPatients }, dispatch] = useStateValue();
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -44,17 +46,9 @@ const PatientProfile = () => {
       </Typography>
       <Box component="span" sx={{ display: 'block' }}>
         {individualPatients[String(id)].entries.map((entry: Entry) => (
-          <span key={entry.id}>
-            {entry.date} {entry.description}
-            <ul>
-              {entry.diagnosisCodes?.map((code) => (
-                <li key={code}>
-                  {code} {diagnoses.find(diagnosis => diagnosis.code === code)?.name}
-                </li>
-              ))}
-            </ul>
-
-          </span>
+          <div key={entry.id} style={{ border: "1px solid black", borderRadius: "5px", padding: "5px", margin: "10px", maxWidth: "500px" }}>
+            <EntryDetails entry={entry} />
+          </div>
         ))}
       </Box>
 
