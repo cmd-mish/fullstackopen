@@ -1,0 +1,56 @@
+POST http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/entries
+content-type: application/json
+
+{
+  "date": "2016-01-10",
+  "type": "Hospital",
+  "description": "test",
+  "specialist": "specialist",
+  "discharge": {
+    "date": "2021-02-01",
+    "criteria": "why not????"
+  }
+}
+
+###
+
+POST http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/entries
+content-type: application/json
+
+{
+  "date": "2019-02-09",
+  "type": "OccupationalHealthcare",
+  "description": "Test description",
+  "specialist": "me",
+  "employerName": "company"
+}
+
+###
+
+POST http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/entries
+content-type: application/json
+
+{
+  "date": "2019-02-09",
+  "type": "OccupationalHealthcare",
+  "description": "Test description",
+  "specialist": "me",
+  "employerName": "company",
+  "sickLeave": {
+    "startDate": "2021-10-01",
+    "endDate": "2021-10-02"
+  }
+}
+
+###
+
+POST http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/entries
+content-type: application/json
+
+{
+  "date": "2020-05-21",
+  "type": "HealthCheck",
+  "description": "just a checkup",
+  "specialist": "professional",
+  "healthCheckRating": 2
+}

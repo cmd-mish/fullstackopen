@@ -1,4 +1,4 @@
-import { Gender, NewPatient } from "./types";
+import { Gender, NewPatient, NewEntry, HealthCheckRating, SickLeave, Discharge } from "./types";
 
 type Fields = {
   name: unknown,
@@ -64,7 +64,7 @@ const parseOccupation = (occupation: unknown): string => {
 };
 
 
-const toNewPatient = ({ name, dateOfBirth, ssn, gender, occupation }: Fields): NewPatient => {
+export const toNewPatient = ({ name, dateOfBirth, ssn, gender, occupation }: Fields): NewPatient => {
   const newPatient: NewPatient = {
     name: parseName(name),
     dateOfBirth: parseDateOfBirth(dateOfBirth),
@@ -75,4 +75,100 @@ const toNewPatient = ({ name, dateOfBirth, ssn, gender, occupation }: Fields): N
   return newPatient;
 };
 
-export default toNewPatient;
+const parseSpecialist = (specialist: unknown): string => {
+  if (!specialist || !isString(specialist)) {
+    throw new Error('Incorrect specialist');
+  }
+  return specialist;
+};
+
+const parseDescription = (description: unknown): string => {
+  if (!description || !isString(description)) {
+    throw new Error('Incorrect description');
+  }
+  return description;
+};
+
+const parseDate = (date: unknown): string => {
+  if (!date || !isString(date) || !isDate(date)) {
+    throw new Error('Incorrect date');
+  }
+  return date;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isHealthCheckRating = (param: any): param is HealthCheckRating => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  return Object.values(HealthCheckRating).includes(param);
+};
+
+const parseHealthCheckRating = (healthCheckRating: unknown): HealthCheckRating => {
+  if (!healthCheckRating || !isHealthCheckRating(healthCheckRating)) {
+    throw new Error('Incorrect health check rating');
+  }
+  return healthCheckRating;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isSickLeave = (sickLeave: any): boolean => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  return Boolean(sickLeave.startDate && sickLeave.endDate && isString(sickLeave.startDate) && isString(sickLeave.endDate) && isDate(sickLeave.startDate) && isDate(sickLeave.endDate));
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const parseSickLeave = (sickLeave: any): SickLeave | undefined => {
+  if (!sickLeave) return undefined;
+
+  if (!isSickLeave(sickLeave)) {
+    throw new Error('Incorrect sick leave');
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return sickLeave;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isDischarge = (discharge: any): boolean => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  return Boolean(discharge.date && discharge.criteria && isString(discharge.criteria) && isString(discharge.date) && isDate(discharge.date));
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const parseDischarge = (discharge: any): Discharge => {
+  if (!discharge || !isDischarge(discharge)) {
+    throw new Error('Incorrect discharge');
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return discharge;
+};
+
+export const toNewEntry = (entry: NewEntry): NewEntry => {
+  switch (entry.type) {
+    case "HealthCheck":
+      return {
+        description: parseDescription(entry.description),
+        date: parseDate(entry.date),
+        specialist: parseSpecialist(entry.specialist),
+        type: entry.type,
+        healthCheckRating: parseHealthCheckRating(entry.healthCheckRating)
+      };
+    case "OccupationalHealthcare":
+      return {
+        description: parseDescription(entry.description),
+        date: parseDate(entry.date),
+        specialist: parseSpecialist(entry.specialist),
+        type: entry.type,
+        sickLeave: parseSickLeave(entry.sickLeave),
+        employerName: parseName(entry.employerName)
+      };
+    case "Hospital":
+      return {
+        description: parseDescription(entry.description),
+        date: parseDate(entry.date),
+        specialist: parseSpecialist(entry.specialist),
+        type: entry.type,
+        discharge: parseDischarge(entry.discharge)
+      };
+    default:
+      throw new Error('Incorrect type');
+  }
+};
