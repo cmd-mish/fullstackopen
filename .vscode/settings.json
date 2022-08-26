@@ -1,0 +1,7 @@
+{
+  "eslint.workingDirectories": [
+    "./part9/calculators/",
+    "./part9/patientor-backend",
+    "./part9/patientor"
+  ]
+}
