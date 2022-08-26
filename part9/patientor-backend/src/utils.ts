@@ -103,7 +103,7 @@ const isHealthCheckRating = (param: any): param is HealthCheckRating => {
 };
 
 const parseHealthCheckRating = (healthCheckRating: unknown): HealthCheckRating => {
-  if (!healthCheckRating || !isHealthCheckRating(healthCheckRating)) {
+  if (!isHealthCheckRating(healthCheckRating)) {
     throw new Error('Incorrect health check rating');
   }
   return healthCheckRating;
@@ -149,7 +149,8 @@ export const toNewEntry = (entry: NewEntry): NewEntry => {
         date: parseDate(entry.date),
         specialist: parseSpecialist(entry.specialist),
         type: entry.type,
-        healthCheckRating: parseHealthCheckRating(entry.healthCheckRating)
+        healthCheckRating: parseHealthCheckRating(entry.healthCheckRating),
+        diagnosisCodes: entry.diagnosisCodes
       };
     case "OccupationalHealthcare":
       return {
@@ -158,7 +159,8 @@ export const toNewEntry = (entry: NewEntry): NewEntry => {
         specialist: parseSpecialist(entry.specialist),
         type: entry.type,
         sickLeave: parseSickLeave(entry.sickLeave),
-        employerName: parseName(entry.employerName)
+        employerName: parseName(entry.employerName),
+        diagnosisCodes: entry.diagnosisCodes
       };
     case "Hospital":
       return {
@@ -166,7 +168,8 @@ export const toNewEntry = (entry: NewEntry): NewEntry => {
         date: parseDate(entry.date),
         specialist: parseSpecialist(entry.specialist),
         type: entry.type,
-        discharge: parseDischarge(entry.discharge)
+        discharge: parseDischarge(entry.discharge),
+        diagnosisCodes: entry.diagnosisCodes
       };
     default:
       throw new Error('Incorrect type');
