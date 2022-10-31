@@ -8,5 +8,7 @@ Links to submission repositories of the subsequent parts of the course:
 - [Part 12. Containers](https://github.com/cmd-mish/fullstackopen-part12)
 - [Part 13. Using relational databases](https://github.com/cmd-mish/fullstackopen-part13)
 
-## Certificate
-![Fullstack Certificate](./certificate-fullstack.png)
+## Certificates
+![Fullstack Certificate](./certificates/certificate-fullstack.png)
+![GraphQL Certificate](./certificates/certificate-graphql.png)
+![TypeScript Certificate](./certificates/certificate-typescript.png)
